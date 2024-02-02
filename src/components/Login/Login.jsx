@@ -16,7 +16,7 @@ const Login = () => {
         event.preventDefault();
 
         const response = await loginUser({ ...data });
-        if (response) {
+        if (response.success) {
             localStorage.setItem("token", response.token);
             localStorage.setItem("userName", response.name);
             navigate("/");
