@@ -12,12 +12,13 @@ export const getAllJobs = ({ skills, position }) => {
   }
 };
 
-export const getJobDetails = ({ jobId }) => {
+export const getJobDetails =async (jobId) => {
   try {
     const reqUrl = `${backendUrl}/job/job-description/${jobId}`;
 
-    const response = axios.get(reqUrl);
-    return response.data?.data;    console.log(response);
+    const response =await axios.get(reqUrl);
+    return response.data?.data;    
+    console.log(response);
   } catch (error) {
     console.log(error);
   }

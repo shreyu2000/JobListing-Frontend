@@ -39,7 +39,10 @@
     color: #ED5353;
     margin-top: 0.5rem;
 }
-
+.preHeading{
+    display: flex;
+    gap: 10px;
+}
 .info {
     margin: 1.5rem auto;
 }

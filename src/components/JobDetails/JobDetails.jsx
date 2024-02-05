@@ -1,22 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getJobDetails } from "../../apis/job";
+import { getJobDetails } from "../../apis/job.js";
 import styles from "./JobDetails.module.css";
+ 
 
 const JobDetails = ({}) => {
     const navigate = useNavigate();
     const [data, setData] = useState(true);
 
-    // useEffect(() => {
-    //     fetchJobDetailsById();
-    // }, []);
+    useEffect(() => {
+        fetchJobDetailsById();
+    }, []);
 
-    // const fetchJobDetailsById = async () => {
-    //     const jobId = window.location.pathname?.split("/").slice(-1)[0];
-    //     if (!jobId) return;
-    //     const response = await getJobDetails(jobId);
-    //     setData(response);
-    // };
+    const fetchJobDetailsById = async () => {
+        const jobId = window.location.pathname?.split("/").slice(-1)[0];
+        if (!jobId) return;
+        const response = await getJobDetails(jobId);
+        setData(response);
+    };
 
     return (
         <>
@@ -24,20 +25,24 @@ const JobDetails = ({}) => {
                 <>
                     <div className={styles.container}>
                         <p className={styles.containerText}>
-                            {/* {data?.companyName} */}companyName
+                            {data?.companyName}
                         </p>
                     </div>
+
                     <div className={styles.containerBottom}>
                         <div className={styles.preHeading}>
-                            <p className={styles.lightText}>{"data.jobType"}</p>
+                            <p>1 w ago</p>
+                            <p className={styles.lightText}>{data.jobType}</p>
                         </div>
+
                         <div className={styles.heading}>
                             <div>
-                                <p className={styles.boldText}>{data.title}</p>
+                                <p className={styles.boldText}>{data?.jobPosition}</p>
                                 <p className={styles.locationText}>
-                                    {"data.location"}
+                                    {data.location} | India
                                 </p>
                             </div>
+
                             <div>
                                 <button
                                     onClick={() => {
@@ -59,31 +64,35 @@ const JobDetails = ({}) => {
                             <div>
                                 <p className={styles.lightText}>Stipend</p>
                                 <p className={styles.lightText}>
-                                    {"data.salary"}
+                                    <span></span>{data.monthlySalary}
                                 </p>
                             </div>
                             <div>
                                 <p className={styles.lightText}>Duration</p>
-                                <p className={styles.lightText}>6 Months</p>
+                                <p className={styles.lightText}>{data.jobDuration}</p>
                             </div>
                         </div>
                         <div className={styles.info}>
                             <h2>About Company</h2>
-                            <p>{"data.about"}</p>
+                            <p>{data.aboutComp}</p>
+                        </div>
+                        <div className={styles.info}>
+                            <h2>About the job/internship</h2>
+                            <p>{data.jobDescription}</p>
                         </div>
                         <div className={styles.info}>
                             <h2>Skill(s) Required</h2>
-                            {/* {data.skillsRequired.map((skill) => {
+                            {data.skillsRequired.map((skill) => {
                                 return (
                                     <span className={styles.skill} key={skill}>
                                         {skill}
                                     </span>
                                 );
-                            })} */}
+                            })}
                         </div>
                         <div className={styles.info}>
-                            <h2>About the job/internship</h2>
-                            <p>{"data.description"}</p>
+                            <h2>Additional Information</h2>
+                            <p>{data.information}</p>
                         </div>
                     </div>
                 </>

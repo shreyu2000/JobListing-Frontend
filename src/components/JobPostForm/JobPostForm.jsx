@@ -2,22 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import styles from "./JobPostForm.module.css";
 import { createJobPost, updateJobPost } from "../../apis/job.js";
+// import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 export default function JobPostForm() {
+  const navigate = useNavigate();
   const { state } = useLocation();
-//  companyName,
-//   logoUrl,
-//   jobPosition,
-//   monthlySalary,
-//   jobType,
-//   locationPreference,
-//   location,
-//   jobDescription,
-//   aboutComp,
-//   companySize,
-//   jobDuration,
-//   skillsRequired,
-//   information,
 
   const [isEditExistingJobPost] = useState(false || state?.edit);
   const [formData, setFormData] = useState({
@@ -28,39 +18,43 @@ export default function JobPostForm() {
     jobType: state?.data?.jobType || "full-time",
     locationPreference: state?.data?.locationPreference || "remote",
     location: state?.data?.location || "",
-    jobDescription: state?.data?. jobDescription || "",
+    jobDescription: state?.data?.jobDescription || "",
     aboutComp: state?.data?.aboutComp || "",
-    skillsRequired: state?.data?.skillsRequired || "HTML",
+    skillsRequired: state?.data?.skillsRequired || [],
     information: state?.data?.information || "",
     jobDuration: state?.data?.jobDuration || "",
     companySize: state?.data?.companySize || "",
-});
-
-  //This pattern helps prevent errors if any property in state?.data is undefined or null, ensuring that the default values are used in such cases
+  });
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
-  };
+};
 
-  const handleSubmit = async (event) => {
+const handleSubmit = async (event) => {
     if (isEditExistingJobPost) {
-      if (!state.id) return;
-      await updateJobPost(state.id, {
-        ...formData,
-        skillsRequired: formData.skillsRequired.split(","),
-      });
+        if (!state.id) return;
+        const res = await updateJobPost(state.id, {
+            ...formData,
+            // skillsRequired: formData.skillsRequired.split(","),
+        });
+        if(res.success){
+          alert("Job Updated")
+        }
+
     } else {
-      await createJobPost({
-        ...formData,
-        skillsRequired: formData.skillsRequired.split(","),
-      });
+        const res = await createJobPost({
+            ...formData,
+            // skillsRequired: formData.skillsRequired.split(","), handling in the backend
+        });
+        if(res.success){
+          alert("Job Created")
+        }
     }
-  };
+};
 
-
-  useEffect(() => {
+useEffect(() => {
     console.log(formData);
-  }, [formData]);
+}, [formData]);
 
   return (
     <div className={styles.container}>
@@ -195,26 +189,17 @@ export default function JobPostForm() {
         {/* dropdown */}
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="skillsRequired">
-            Skills Required:
+            Skills Required (comma-separated):
           </label>
-          <select
+          <input
             className={styles.input}
+            type="text"
             name="skillsRequired"
             value={formData?.skillsRequired}
             onChange={handleChange}
-            multiple
-          >
-            <option value="HTML">HTML</option>
-            <option value="CSS">CSS</option>
-            <option value="JavaScript">JavaScript</option>
-            <option value="JavaScript">React</option>
-            <option value="JavaScript">Nodejs</option>
-            <option value="JavaScript">Mongodb</option>
-            {/* Add more skills as needed */}
-          </select>
+            placeholder="Enter skills separated by commas"
+          />
         </div>
-
-        
 
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="addinfo">
@@ -257,7 +242,7 @@ export default function JobPostForm() {
         </div>
       </div>
       <button
-        // onClick={() => navigate("/listing")}
+        onClick={() => navigate("/")}
         className={styles.cancel}
       >
         Cancel
@@ -271,6 +256,8 @@ export default function JobPostForm() {
           + Add Job
         </button>
       )}
+
     </div>
+
   );
 }
