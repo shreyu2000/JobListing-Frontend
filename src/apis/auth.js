@@ -2,11 +2,11 @@
 import axios from "axios";
 const backendUrl = "http://localhost:4000/api/v1";
 
-export const registerUser  =async ({name ,email,mobile ,password})=>{
+export const registerUser  = async ({name ,email,mobile ,password})=>{
     try {
     const reqUrl = `${backendUrl}/auth/register`;
     const reqPayload = {name ,email,mobile ,password};
-    const response = await axios.post(reqUrl , reqPayload)
+    const response = await axios.post(reqUrl,reqPayload)
     return response.data;
         
     } catch (error) {

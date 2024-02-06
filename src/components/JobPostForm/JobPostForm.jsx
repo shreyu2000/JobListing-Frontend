@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./JobPostForm.module.css";
 import { createJobPost, updateJobPost } from "../../apis/job.js";
-// import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from "react-router-dom";
 
 export default function JobPostForm() {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const [isEditExistingJobPost] = useState(false || state?.edit);
+  const isEditExistingJobPost = useState(state?.edit || false)[0];
   const [formData, setFormData] = useState({
     companyName: state?.data?.companyName || "",
     logoUrl: state?.data?.logoUrl || "",
@@ -20,41 +18,46 @@ export default function JobPostForm() {
     location: state?.data?.location || "",
     jobDescription: state?.data?.jobDescription || "",
     aboutComp: state?.data?.aboutComp || "",
-    skillsRequired: state?.data?.skillsRequired || [],
+    skillsRequired: state?.data?.skillsRequired || "",
     information: state?.data?.information || "",
     jobDuration: state?.data?.jobDuration || "",
     companySize: state?.data?.companySize || "",
   });
 
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
-};
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-const handleSubmit = async (event) => {
-    if (isEditExistingJobPost) {
-        if (!state.id) return;
-        const res = await updateJobPost(state.id, {
-            ...formData,
-            // skillsRequired: formData.skillsRequired.split(","),
-        });
-        if(res.success){
-          alert("Job Updated")
-        }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      // Split skillsRequired into an array
+      const updatedFormData = {
+        ...formData,
+        // skillsRequired: formData.skillsRequired.split(",").map(skill => skill.trim()),
+        skillsRequired: typeof formData.skillsRequired === 'string' ? formData.skillsRequired.split(',').map(skill => skill.trim()) : formData.skillsRequired
 
-    } else {
-        const res = await createJobPost({
-            ...formData,
-            // skillsRequired: formData.skillsRequired.split(","), handling in the backend
-        });
-        if(res.success){
-          alert("Job Created")
-        }
+      };
+
+      if (isEditExistingJobPost) {
+        if (!state.id) throw new Error("Invalid job ID");
+        await updateJobPost(state.id, updatedFormData);
+        alert("Job Updated");
+      } else {
+        await createJobPost(updatedFormData);
+        alert("Job Created");
+      }
+      navigate(`/job-details/${state.id}`);
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle error - display message to the user
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     console.log(formData);
-}, [formData]);
+  }, [formData]);
 
   return (
     <div className={styles.container}>
@@ -128,9 +131,9 @@ useEffect(() => {
             value={formData?.jobType}
             onChange={handleChange}
           >
-            <option value="full-time">Full Time</option>
-            <option value="part-time">Part Time</option>
-            <option value="internship">Internship</option>
+            <option value="Full-time">Full Time</option>
+            <option value="Part-time">Part Time</option>
+            <option value="Internship">Internship</option>
           </select>
         </div>
         {/* dropdown select  */}
@@ -241,23 +244,12 @@ useEffect(() => {
           />
         </div>
       </div>
-      <button
-        onClick={() => navigate("/")}
-        className={styles.cancel}
-      >
-        Cancel
-      </button>
-      {isEditExistingJobPost ? (
-        <button onClick={handleSubmit} className={styles.add}>
-          Edit Job
+      <button type="button" onClick={() => navigate(`/job-details/${state.id}`)} className={styles.cancel}>
+          Cancel
         </button>
-      ) : (
-        <button onClick={handleSubmit} className={styles.add}>
-          + Add Job
+        <button type="submit" className={styles.add}  onClick={handleSubmit}>
+          {isEditExistingJobPost ? "Edit Job" : "+ Add Job"}
         </button>
-      )}
-
     </div>
-
   );
 }

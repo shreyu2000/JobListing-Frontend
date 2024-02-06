@@ -2,21 +2,29 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getJobDetails } from "../../apis/job.js";
 import styles from "./JobDetails.module.css";
- 
+import money_icon from '../../assets/icons/ph_money-fill.png';
+import calender from '../../assets/icons/uis_calender.png'
 
-const JobDetails = ({}) => {
+const JobDetails = () => {
     const navigate = useNavigate();
-    const [data, setData] = useState(true);
+    const [data, setData] = useState(null); // Initialize data state with null
 
     useEffect(() => {
         fetchJobDetailsById();
+     
     }, []);
 
     const fetchJobDetailsById = async () => {
-        const jobId = window.location.pathname?.split("/").slice(-1)[0];
-        if (!jobId) return;
-        const response = await getJobDetails(jobId);
-        setData(response);
+        try {
+            const jobId = window.location.pathname?.split("/").slice(-1)[0];
+            if (!jobId) return;
+            const response = await getJobDetails(jobId);
+            setData(response);
+           
+        } catch (error) {
+            console.error("Error fetching job details:", error);
+            // Handle error - display message to the user or log it for debugging
+        }
     };
 
     return (
@@ -30,8 +38,9 @@ const JobDetails = ({}) => {
                     </div>
 
                     <div className={styles.containerBottom}>
+                    <div className={styles.contentcontainer}>
                         <div className={styles.preHeading}>
-                            <p>1 w ago</p>
+                            <p>1 week ago</p>
                             <p className={styles.lightText}>{data.jobType}</p>
                         </div>
 
@@ -62,15 +71,16 @@ const JobDetails = ({}) => {
                         </div>
                         <div className={styles.perks}>
                             <div>
-                                <p className={styles.lightText}>Stipend</p>
-                                <p className={styles.lightText}>
-                                    <span></span>{data.monthlySalary}
+                                <p className={styles.lightText} style={{display :"flex"}}><img src={money_icon} style={{width :"20px" ,marginRight:"5px" }}/>Stipend</p>
+                                <p>
+                                   Rs{data.monthlySalary}/month
                                 </p>
                             </div>
                             <div>
-                                <p className={styles.lightText}>Duration</p>
-                                <p className={styles.lightText}>{data.jobDuration}</p>
+                                <p className={styles.lightText} style={{display :"flex"}}> <img src={calender} style={{width :"20px" ,marginRight:"5px" }}/>Duration</p>
+                                <p>{data.jobDuration}</p>
                             </div>
+
                         </div>
                         <div className={styles.info}>
                             <h2>About Company</h2>
@@ -82,19 +92,21 @@ const JobDetails = ({}) => {
                         </div>
                         <div className={styles.info}>
                             <h2>Skill(s) Required</h2>
-                            {data.skillsRequired.map((skill) => {
+                            {data.skillsRequired.map((skill ,i) => {
                                 return (
-                                    <span className={styles.skill} key={skill}>
+                                    <span className={styles.skill} key={i}>
                                         {skill}
                                     </span>
                                 );
                             })}
+
                         </div>
                         <div className={styles.info}>
                             <h2>Additional Information</h2>
-                            <p>{data.information}</p>
+                            <p>{data?.information}</p>
                         </div>
                     </div>
+                </div>
                 </>
             ) : (
                 <></>

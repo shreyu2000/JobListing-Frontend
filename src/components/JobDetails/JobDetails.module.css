@@ -3,7 +3,7 @@
     position: fixed;
     top: 15vh;
     left: 10vw;
-    margin-right: auto;
+    margin:auto;
     box-sizing: border-box;
     padding: 2rem 1rem;
     background-color: white;
@@ -21,6 +21,9 @@
     box-sizing: border-box;
 }
 
+.contentcontainer{
+    margin: 1rem;
+}
 .lightText {
     color: #999999;
 }
@@ -38,11 +41,15 @@
 .locationText {
     color: #ED5353;
     margin-top: 0.5rem;
+    font-weight: 500;
 }
+
+
 .preHeading{
     display: flex;
     gap: 10px;
 }
+
 .info {
     margin: 1.5rem auto;
 }
@@ -63,6 +70,11 @@
     margin-top: 1rem;
 }
 
+.perks p {
+    margin: 10px 0;
+    color:#595959;
+    font-size: 18px;
+}
 .skill {
     background-color: #FFEEEE;
     color: black;

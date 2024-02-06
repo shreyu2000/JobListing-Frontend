@@ -15,6 +15,7 @@ const Register = () => {
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!data.name || !data.mobile || !data.email || !data.password) {

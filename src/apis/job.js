@@ -1,10 +1,9 @@
 import axios from "axios";
-const backendUrl = "http://localhost:4000/api/v1";
+const backendUrl =  "http://localhost:4000/api/v1";
 
 export const getAllJobs = ({ skills, position }) => {
   try {
     const reqUrl = `${backendUrl}/job/all?skills=${skills}&position=${position}`;
-
     const response = axios.get(reqUrl);
     console.log(response);
   } catch (error) {
@@ -15,10 +14,8 @@ export const getAllJobs = ({ skills, position }) => {
 export const getJobDetails =async (jobId) => {
   try {
     const reqUrl = `${backendUrl}/job/job-description/${jobId}`;
-
     const response =await axios.get(reqUrl);
     return response.data?.data;    
-    console.log(response);
   } catch (error) {
     console.log(error);
   }
